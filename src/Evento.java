@@ -73,16 +73,18 @@ public class Evento implements Serializable{
 	// Controlla che le date siano inserite in maniera coerente con il loro significato
 	public Boolean controlloDate() {
 		Boolean valido= true;
+		Date ultimaIscr = (Date) categoria.getDataRitiroIscrizione().getValore().getValore();
 		Date termIsc= (Date) categoria.getTermineIscrizione().getValore().getValore();
 		Date dataEv= (Date) categoria.getData().getValore().getValore();
 		if(categoria.getDataFine().getValore().getInserito()){
 			Date dataConc= (Date) categoria.getDataFine().getValore().getValore();;			
-			if(termIsc.after(dataEv)||termIsc.after(dataConc)||dataEv.after(dataConc)){
+			if(termIsc.after(dataEv)||termIsc.after(dataConc)||dataEv.after(dataConc) || ultimaIscr.after(termIsc)){
 				valido=false;
 			}
 		}
-		else{
-			if(termIsc.after(dataEv))
+		else if(termIsc.after(dataEv)){
+				valido=false;
+		}else if(ultimaIscr.after(termIsc)){
 				valido=false;
 		}
 				
@@ -106,18 +108,21 @@ public class Evento implements Serializable{
 	
 			}
 		
+		}else if(getPostiLiberi() != 0 && getPostiLiberiPartecipanti() == 0 ){
+
 		}
 		
 		return messaggiStato;
 		
 	}
-	
-	// Metodo che controlla se si � superata la dta di termine iscrizione o quella di svolgimento dell'evento
+
+
+	// Metodo che controlla se si � superata la data di termine iscrizione o quella di svolgimento dell'evento
 	public ArrayList<Messaggio> controlloData(){
 		
 		// Data odierna per effettuare il confronto
 		DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
-		Date date = new Date("22/02/2021");
+		Date date = new Date();
 		
 		
 		ArrayList<Messaggio> messaggiStato = new ArrayList<>();
@@ -141,7 +146,7 @@ public class Evento implements Serializable{
 		// Controla se � stata superata la data di termine delle iscrizioni senza aver raggiunto il numero minimo di iscritti
 		// Genera dei messaggi in caso affermativo
 		if( ((Date) categoria.getTermineIscrizione().getValore().getValore()).before(date)){
-			if (getPostiLiberi()!=0){
+			if (getPostiLiberi()!=0 && getPostiLiberiPartecipanti() != 0){
 				stato="Fallita";
 				
 				for (int i=0;i< elencoIscritti.size();i++){
@@ -150,6 +155,8 @@ public class Evento implements Serializable{
 					Messaggio msg =new Messaggio(nomeUtente,testo);
 					messaggiStato.add(msg);
 				}
+			}else if(getPostiLiberi() != 0 && getPostiLiberiPartecipanti() == 0) {
+				stato = "Conlusa";
 			}
 		}
 		
@@ -159,18 +166,24 @@ public class Evento implements Serializable{
 	
 	
 	// Metodo che ritorna il numero di posti liberi di un evento
-	public int getPostiLiberi(){
-		return (int) categoria.getnPartecipanti().getValore().getValore()- elencoIscritti.size();
+	public int getPostiLiberiPartecipanti(){
+		int iscritti = elencoIscritti.size();
+		int partecipanti = (int) categoria.getnPartecipanti().getValore().getValore();
+		if(iscritti <= partecipanti)
+			return (int) categoria.getnPartecipanti().getValore().getValore() - elencoIscritti.size();
+		else
+			return 0;
 	}
-	
-	
 
-	
-	
-	
-	
+	public int getPostiLiberi(){
+		int totali = 0;
+		int partecipanti = (int)categoria.getnPartecipanti().getValore().getValore();
+		int esubero = (int)categoria.getTolleranzaPartecipanti().getValore().getValore();
+		totali = partecipanti + esubero;
+		return totali - elencoIscritti.size();
+	}
 
-	
+
 	// Getters and Setters generati automaticamente
 	public Categoria getCategoria() {
 		return categoria;

@@ -19,17 +19,19 @@ public class Categoria implements Serializable{
 	
 	private String nome;
 	private String descrizione;
-	private Campo titolo=new Campo("Titolo","Consiste in un nome di fantasia attribuito all’evento",false,STRING);
-	private Campo nPartecipanti=new Campo("Numero di partecipanti"," Stabilisce il numero di persone da coinvolgere nell’evento",true,INT);
-	private Campo termineIscrizione=new Campo("Termine ultimo iscrizione","Indica l'ultimo giorno utile per iscriversi all’evento",true,DATE);
-	private Campo luogo=new Campo("Luogo","Indica l'indirizzo in cui si svolgerà l’evento oppure il punto di ritrovo",true,STRING);
-	private Campo data=new Campo("Data Evento"," Indica la data in cui si svolgerà l'evento, o la data di inizio nel caso l'evento duri più giorni",true,DATE);
+	private Campo titolo=new Campo("Titolo","Consiste in un nome di fantasia attribuito allï¿½evento",false,STRING);
+	private Campo nPartecipanti=new Campo("Numero di partecipanti"," Stabilisce il numero di persone da coinvolgere nellï¿½evento",true,INT);
+	private Campo tolleranzaPartecipanti=new Campo("Numero di partecipanti in esubero"," Stabilisce il numero di persone in esubero al numero di partecipanti",false,INT);
+	private Campo termineIscrizione=new Campo("Termine ultimo iscrizione","Indica l'ultimo giorno utile per iscriversi allï¿½evento",true,DATE);
+	private Campo luogo=new Campo("Luogo","Indica l'indirizzo in cui si svolgerï¿½ lï¿½evento oppure il punto di ritrovo",true,STRING);
+	private Campo data=new Campo("Data Evento"," Indica la data in cui si svolgerï¿½ l'evento, o la data di inizio nel caso l'evento duri piï¿½ giorni",true,DATE);
 	private Campo ora=new Campo("Ora","Indica l'ora in cui i partecipanti dovranno recarisi nel luogo prestabilito",true,ORA);
-	private Campo durata=new Campo("Durata","Indica la durata in termini di numero(approssimativo)di ore e minuti, per gli eventi che si esauriscono in un sol giorno, o in termini di numero esatto di giorni, per gli eventi che occupano più giorni consecutivi",false,ORA);
-	private Campo quotaIndividuale=new Campo("Quota individuale"," indica la spesa (o una stima della stessa) che ogni partecipante all’iniziativa dovrà sostenere (si noti che la spesa può anche essere nulla)",true,INT);
-	private Campo compresoQuota=new Campo("Compreso nella quota"," indica tutte le voci di spesa comprese nell’ammontare indicato nella “Quota individuale”",false,STRING);
-	private Campo dataFine=new Campo("Data conclusiva"," Indica la data di fine dell’evento",false,DATE);
-	private Campo oraFine=new Campo("Ora conclusiva"," Indica l'ora di fine dell’evento",false,ORA);
+	private Campo durata=new Campo("Durata","Indica la durata in termini di numero(approssimativo)di ore e minuti, per gli eventi che si esauriscono in un sol giorno, o in termini di numero esatto di giorni, per gli eventi che occupano piï¿½ giorni consecutivi",false,ORA);
+	private Campo quotaIndividuale=new Campo("Quota individuale"," indica la spesa (o una stima della stessa) che ogni partecipante allï¿½iniziativa dovrï¿½ sostenere (si noti che la spesa puï¿½ anche essere nulla)",true,INT);
+	private Campo compresoQuota=new Campo("Compreso nella quota"," indica tutte le voci di spesa comprese nellï¿½ammontare indicato nella ï¿½Quota individualeï¿½",false,STRING);
+	private Campo dataFine=new Campo("Data conclusiva"," Indica la data di fine dellï¿½evento",false,DATE);
+    private Campo dataRitiroIscrizione=new Campo("Data ritiro iscrizione","Indica la data entro cui sia possibile: per il creatore dell'evento eliminare l'evento, per i partecipanti di annullare l'iscrizione dall'evento",false,DATE);
+    private Campo oraFine=new Campo("Ora conclusiva"," Indica l'ora di fine dellï¿½evento",false,ORA);
 	private Campo note=new Campo("Note"," Contiene informazioni aggiuntive circa l'evento",false,STRING);
 	private ArrayList<Campo> elencoCampi = new ArrayList<>();
 	
@@ -45,6 +47,7 @@ public class Categoria implements Serializable{
 	public void creaArray(){
 		elencoCampi.add(titolo);
 		elencoCampi.add(nPartecipanti);
+        elencoCampi.add(tolleranzaPartecipanti);
 		elencoCampi.add(termineIscrizione);
 		elencoCampi.add(luogo);
 		elencoCampi.add(data);
@@ -53,6 +56,7 @@ public class Categoria implements Serializable{
 		elencoCampi.add(quotaIndividuale);
 		elencoCampi.add(compresoQuota);
 		elencoCampi.add(dataFine);
+        elencoCampi.add(dataRitiroIscrizione);
 		elencoCampi.add(oraFine);
 		elencoCampi.add(note);
 	}
@@ -222,6 +226,19 @@ public class Categoria implements Serializable{
 		this.data = data;
 	}
 
-	
-	
+    public Campo getTolleranzaPartecipanti() {
+        return tolleranzaPartecipanti;
+    }
+
+    public void setTolleranzaPartecipanti(Campo tolleranzaPartecipanti) {
+        this.tolleranzaPartecipanti = tolleranzaPartecipanti;
+    }
+
+    public Campo getDataRitiroIscrizione() {
+        return dataRitiroIscrizione;
+    }
+
+    public void setDataRitiroIscrizione(Campo dataRitiroIscrizione) {
+        this.dataRitiroIscrizione = dataRitiroIscrizione;
+    }
 }

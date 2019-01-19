@@ -6,7 +6,7 @@ import MyLib.Utility;
 
 public class Partita extends Categoria {
 	private Campo genere=new Campo("Genere","Indica se i partecipanti sono maschi o femmine",true,STRING);
-	private Campo fasciaEta=new Campo("Fascia di età","Indica l'età massima e minima per partecipare all'evento",true,STRING);
+	private Campo fasciaEta=new Campo("Fascia di etï¿½","Indica l'etï¿½ massima e minima per partecipare all'evento",true,STRING);
 	private ArrayList<Campo> elencoCampi = new ArrayList<>();
 	
 	
@@ -23,6 +23,7 @@ public class Partita extends Categoria {
 		
 		elencoCampi.add(super.getTitolo());
 		elencoCampi.add(super.getnPartecipanti());
+		elencoCampi.add(super.getTolleranzaPartecipanti());
 		elencoCampi.add(super.getTermineIscrizione());
 		elencoCampi.add(super.getLuogo());
 		elencoCampi.add(super.getData());
@@ -31,6 +32,7 @@ public class Partita extends Categoria {
 		elencoCampi.add(super.getQuotaIndividuale());
 		elencoCampi.add(super.getCompresoQuota());
 		elencoCampi.add(super.getDataFine());
+		elencoCampi.add(super.getDataRitiroIscrizione());
 		elencoCampi.add(super.getOraFine());
 		elencoCampi.add(super.getNote());
 		elencoCampi.add(genere);
