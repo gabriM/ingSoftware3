@@ -20,6 +20,7 @@ public class Evento implements Serializable{
 	private Utente creatore;
 	private ArrayList <Utente> elencoIscritti = new ArrayList<>();
 	private String stato;
+
 	
 	
 	//Costruttori
@@ -86,6 +87,8 @@ public class Evento implements Serializable{
 				valido=false;
 		}else if(ultimaIscr.after(termIsc)){
 				valido=false;
+		}else if(ultimaIscr.equals(termIsc)){
+				valido= true;
 		}
 				
 		return valido;
@@ -108,7 +111,16 @@ public class Evento implements Serializable{
 	
 			}
 		
-		}else if(getPostiLiberi() != 0 && getPostiLiberiPartecipanti() == 0 ){
+		}else if(stato.equalsIgnoreCase("Chiusa2")){
+			stato= "Chiusa";
+			for (int i=0;i< elencoIscritti.size();i++) {
+
+				Utente nomeUtente = elencoIscritti.get(i);
+				String testo = TESTOCHIUSURA[0] + categoria.getTitolo().getValore().getValore() + TESTOCHIUSURA[1] + dateFormat.format(categoria.getData().getValore().getValore()) + TESTOCHIUSURA[2] + categoria.getOra().getValore().getValore() + TESTOCHIUSURA[3] + categoria.getLuogo().getValore().getValore() + TESTOCHIUSURA[4] + categoria.getQuotaIndividuale().getValore().getValore() + TESTOCHIUSURA[5];
+				Messaggio msg = new Messaggio(nomeUtente, testo);
+
+				messaggiStato.add(msg);
+			}
 
 		}
 		
@@ -122,7 +134,7 @@ public class Evento implements Serializable{
 		
 		// Data odierna per effettuare il confronto
 		DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
-		Date date = new Date();
+		Date date = new Date("14/04/2019");
 		
 		
 		ArrayList<Messaggio> messaggiStato = new ArrayList<>();
@@ -156,14 +168,31 @@ public class Evento implements Serializable{
 					messaggiStato.add(msg);
 				}
 			}else if(getPostiLiberi() != 0 && getPostiLiberiPartecipanti() == 0) {
-				stato = "Conlusa";
+				stato = "Chiusa2";
 			}
 		}
 		
 		
 		return messaggiStato;
 	}
-	
+
+
+
+	public boolean controlloDataEliminazione(){
+		Boolean valido= true;
+		DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+		Date date = new Date();
+		Date ultimaIscr = (Date) categoria.getDataRitiroIscrizione().getValore().getValore();
+
+		if(date.before(ultimaIscr) || date.equals(ultimaIscr)){
+			valido = true;
+		}else {
+			valido = false;
+		}
+
+		return valido;
+
+	}
 	
 	// Metodo che ritorna il numero di posti liberi di un evento
 	public int getPostiLiberiPartecipanti(){

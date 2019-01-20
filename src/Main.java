@@ -24,7 +24,7 @@ public class Main {
 		final String NOMEMENU="GESTIONE Eventi";
 		final String NOMEMENUMSG="GESTIONE Messaggi";
 		final String[] OPZIONIMSG={"Visualizza messaggi", "Elimina messaggi"};
-		final String[] OPZIONI={"Visualizza Categorie Disponibili","Crea un nuovo evento","Visualizza i miei eventi non ancora pubblicati","Pubblica eventi","Visualizza Bacheca","Partecipa a evento","Gestione Messaggi"};
+		final String[] OPZIONI={"Visualizza Categorie Disponibili","Crea un nuovo evento","Visualizza i miei eventi non ancora pubblicati","Pubblica eventi","Visualizza Bacheca","Partecipa a evento","Gestione Messaggi", "Elimina Iscrizione evento", "Elimina evento"};
 		final String NOME="Nome categoria: ";
 		final String STATO="Stato: ";
 		final String POSTILIBERI="Posti liberi: ";
@@ -42,6 +42,8 @@ public class Main {
 		final String MESSAGGIVUOTI = "Non ci sono messaggi.";
 		final String MSGEVENTO="Evento creato con successo";
 		final String MSGPROBDATE="Le date non sono in ordine logico. DATE CANCELLATE";
+		final String SCELTAELIMINEVENTO= "A quale evento vuoi cancellare la tua iscrizione?";
+		final String ISCRIZIONIVUOTE= "Non sei Iscritto a nessun evento!";
 		
 		
 		// Creazione file per il salvataggio dei dati
@@ -165,7 +167,10 @@ public class Main {
 				
 				Evento evento= new Evento(partita,elencoUtenti.get(numUtente));
 				evento.inserisciDettagliEvento();
-				
+
+				if(!evento.getCategoria().getDataRitiroIscrizione().getValore().getInserito()){
+					evento.getCategoria().setDataRitiroIscrizione(evento.getCategoria().getTermineIscrizione());
+				}
 				evento.getElencoIscritti().add(elencoUtenti.get(numUtente));
 				elencoUtenti.get(numUtente).getEventiUtente().add(evento);
 				System.out.println(MSGEVENTO);
@@ -187,7 +192,8 @@ public class Main {
 					for(int i=0; i<elencoUtenti.get(numUtente).getEventiUtente().size();i++){
 						System.out.println(i+1 +")");
 						if (elencoUtenti.get(numUtente).getEventiUtente().get(i).getCategoria().getTitolo().getValore().getInserito()){
-							System.out.println(NOMEEVENTO + elencoUtenti.get(numUtente).getEventiUtente().get(i).getCategoria().getTitolo().getValore().getValore());	
+							System.out.println(NOMEEVENTO + elencoUtenti.get(numUtente).getEventiUtente().get(i).getCategoria().getTitolo().getValore().getValore());
+							System.out.println("Data Ritiro Iscrizione: " + elencoUtenti.get(numUtente).getEventiUtente().get(i).getCategoria().getDataRitiroIscrizione().getValore().getValore());
 						}
 						else {
 							System.out.println(NOMEEVENTO + "Titolo non ancora inserito");
@@ -237,7 +243,8 @@ public class Main {
 										else{
 											elencoUtenti.get(numUtente).getEventiUtente().get(numEventoPubblicato -1).getCategoria().getData().getValore().removeValore();
 											elencoUtenti.get(numUtente).getEventiUtente().get(numEventoPubblicato -1).getCategoria().getDataFine().getValore().removeValore();
-											elencoUtenti.get(numUtente).getEventiUtente().get(numEventoPubblicato -1).getCategoria().getTermineIscrizione().getValore().removeValore();													
+											elencoUtenti.get(numUtente).getEventiUtente().get(numEventoPubblicato -1).getCategoria().getTermineIscrizione().getValore().removeValore();
+											elencoUtenti.get(numUtente).getEventiUtente().get(numEventoPubblicato -1).getCategoria().getDataRitiroIscrizione().getValore().removeValore();
 											System.out.println(MSGPROBDATE);
 											}
 									}
@@ -372,6 +379,32 @@ public class Main {
 					}while(sceltamsg !=0);
 				
 				break;
+
+				case 8:
+
+					if(bacheca.getElencoEventi().size() != 0 ) {
+
+							System.out.println("0) Esci");
+							for (int i = 0; i < bacheca.getElencoEventi().size(); i++) {
+								if (bacheca.getElencoEventi().get(i).giaIscritto(elencoUtenti.get(numUtente)) && bacheca.getElencoEventi().get(i).controlloDataEliminazione()) {
+									System.out.println(i + 1 + ")");
+									System.out.println(NOMEEVENTO + bacheca.getElencoEventi().get(i).getCategoria().getTitolo().getValore().getValore());
+									System.out.println(NOME + bacheca.getElencoEventi().get(i).getCategoria().getNome());
+									System.out.println(POSTILIBERI + bacheca.getElencoEventi().get(i).getPostiLiberi());
+								}
+
+							}
+
+							// Scelta eventi
+							int numEliminEvento = Utility.leggiIntero(0, bacheca.getElencoEventi().size() + 1, SCELTAELIMINEVENTO);
+
+							if (numEliminEvento != 0) {
+								bacheca.getElencoEventi().get(numEliminEvento - 1).getElencoIscritti().remove(elencoUtenti.get(numUtente));
+							}
+
+					}else{
+						System.out.println(ISCRIZIONIVUOTE);
+					}
 
 			}
 		}while(scelta!=0);
