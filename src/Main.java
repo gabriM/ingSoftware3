@@ -39,16 +39,20 @@ public class Main {
 		final String NONVALIDITAPUBBLICAZIONE = "L'evento selezionato non � valido! Selezionare un altro evento. \n (Un Evento � valido solo se � stato assegnato un valore a tutti i campi obbligatori)";
 		final String BACHECAVUOTA = "Non vi sono eventi validi pubblicati.";
 		final String EVENTIVUOTI = "Non ci sono eventi creati e non acora pubblicati in bacheca.";
+		final String EVENTIPUBBLICATIVUOTI = "Non hai ancora pubblicato eventi in bacheca.";
 		final String MESSAGGIVUOTI = "Non ci sono messaggi.";
 		final String MSGEVENTO="Evento creato con successo";
 		final String MSGPROBDATE="Le date non sono in ordine logico. DATE CANCELLATE";
-		final String SCELTAELIMINEVENTO= "A quale evento vuoi cancellare la tua iscrizione?";
+		final String SCELTAELIMISCRIZIONE= "A quale evento vuoi cancellare la tua iscrizione?";
 		final String ISCRIZIONIVUOTE= "Non sei Iscritto a nessun evento!";
+		final String SCELTAELIMINEVENTO= "Quale evento pubblicato vuoi cancellare?";
+
 		
 		
 		// Creazione file per il salvataggio dei dati
 		File filebacheca = new File ("Bacheca.txt");
 		File fileutenti = new File ("Utenti.txt");
+		File fileutentiP = new File("UtentiP.txt");
 		
 		
 		
@@ -56,6 +60,8 @@ public class Main {
 		ArrayList<Categoria> categorie=new ArrayList<>();
 		ListaEventi bacheca = new ListaEventi();
 		ArrayList<Utente> elencoUtenti=new ArrayList<>();
+		ArrayList<Utente> elencoUtentiPubblicati= new ArrayList<>();
+
 
 		
 		
@@ -71,6 +77,11 @@ public class Main {
 			ServizioFile.salvaSingoloOggetto(filebacheca, bacheca);
 		}else
 			bacheca= (ListaEventi) ServizioFile.caricaSingoloOggetto(filebacheca);
+
+		if(ServizioFile.esistenzaFile(fileutentiP) == 0) {
+			ServizioFile.salvaSingoloOggetto(fileutentiP, elencoUtentiPubblicati);
+		}else
+			elencoUtentiPubblicati= (ArrayList<Utente>) ServizioFile.caricaSingoloOggetto(fileutentiP);
 
 		
 		
@@ -96,6 +107,22 @@ public class Main {
 			numUtente=elencoUtenti.size()-1;
 		}
 		ServizioFile.salvaSingoloOggetto(fileutenti, elencoUtenti);
+
+		boolean esistenteP =false;
+		int numUtenteP=0;
+		for(int i=0; i<elencoUtentiPubblicati.size();i++){
+			if (elencoUtentiPubblicati.get(i).getNomeUtente().equalsIgnoreCase(utente)){
+				esistenteP =true;
+				numUtenteP=i;
+			}
+		}
+		// Se non esiste ne creo uno nuovo
+		if (!esistenteP){
+			Utente nuovoUtenteP= new Utente(utente);
+			elencoUtentiPubblicati.add(nuovoUtenteP);
+			numUtenteP=elencoUtentiPubblicati.size()-1;
+		}
+		ServizioFile.salvaSingoloOggetto(fileutentiP, elencoUtentiPubblicati);
 	
 		// Creazione delle categorie di cui possono essere i vari eventi
 		Partita partita= new Partita();
@@ -130,7 +157,16 @@ public class Main {
 				}
 			}
 
+
 			ServizioFile.salvaSingoloOggetto(filebacheca, bacheca);
+
+			for(int i=0; i< elencoUtentiPubblicati.get(numUtente).getEventiUtente().size();i++){
+				if(!elencoUtentiPubblicati.get(numUtente).getEventiUtente().get(i).getStato().equalsIgnoreCase("Aperta")){
+					elencoUtentiPubblicati.get(numUtente).getEventiUtente().remove(i);
+				}
+			}
+
+			ServizioFile.salvaSingoloOggetto(fileutentiP, elencoUtentiPubblicati);
 			
 			switch(scelta)
 			{
@@ -239,6 +275,10 @@ public class Main {
 											// Pubblicazione evento
 											bacheca.getElencoEventi().add(eventop);
 											elencoUtenti.get(numUtente).getEventiUtente().remove(numEventoPubblicato-1);
+											elencoUtentiPubblicati.get(numUtente).getEventiUtente().add(eventop);
+											ServizioFile.salvaSingoloOggetto(fileutentiP, elencoUtentiPubblicati);
+
+
 										}
 										else{
 											elencoUtenti.get(numUtente).getEventiUtente().get(numEventoPubblicato -1).getCategoria().getData().getValore().removeValore();
@@ -381,8 +421,17 @@ public class Main {
 				break;
 
 				case 8:
+					boolean iscritto = false;
 
-					if(bacheca.getElencoEventi().size() != 0 ) {
+					for (int i = 0; i < bacheca.getElencoEventi().size(); i++) {
+						if (bacheca.getElencoEventi().get(i).giaIscritto(elencoUtenti.get(numUtente))) {
+							iscritto = true;
+						}else{
+							iscritto = false;
+						}
+
+					}
+					if(bacheca.getElencoEventi().size() != 0 && iscritto) {
 
 							System.out.println("0) Esci");
 							for (int i = 0; i < bacheca.getElencoEventi().size(); i++) {
@@ -396,16 +445,35 @@ public class Main {
 							}
 
 							// Scelta eventi
-							int numEliminEvento = Utility.leggiIntero(0, bacheca.getElencoEventi().size() + 1, SCELTAELIMINEVENTO);
+							int numEliminIscrizione = Utility.leggiIntero(0, bacheca.getElencoEventi().size() + 1, SCELTAELIMISCRIZIONE);
 
-							if (numEliminEvento != 0) {
-								bacheca.getElencoEventi().get(numEliminEvento - 1).getElencoIscritti().remove(elencoUtenti.get(numUtente));
+							if (numEliminIscrizione != 0) {
+								bacheca.getElencoEventi().get(numEliminIscrizione - 1).getElencoIscritti().remove(elencoUtenti.get(numUtente));
 							}
 
 					}else{
 						System.out.println(ISCRIZIONIVUOTE);
 					}
 
+				break;
+
+				case 9:
+					if(elencoUtentiPubblicati.get(numUtente).getEventiUtente().size()!=0){
+						for(int i=0; i<elencoUtentiPubblicati.get(numUtente).getEventiUtente().size();i++){
+							System.out.println(i+1 +")");
+							System.out.println(NOMEEVENTO + elencoUtentiPubblicati.get(numUtente).getEventiUtente().get(i).getCategoria().getTitolo().getValore().getValore());
+							System.out.println("Data Ritiro Iscrizione: " + elencoUtentiPubblicati.get(numUtente).getEventiUtente().get(i).getCategoria().getDataRitiroIscrizione().getValore().getValore());
+							}
+						int numEliminEventoPubblicato = Utility.leggiIntero(0, elencoUtentiPubblicati.size() + 1, SCELTAELIMINEVENTO);
+
+						if (numEliminEventoPubblicato != 0) {
+							elencoUtentiPubblicati.get(numUtente).getEventiUtente().get(numEliminEventoPubblicato -1).setStato("Chiusa");
+							elencoUtentiPubblicati.get(numUtente).getEventiUtente().remove(numEliminEventoPubblicato - 1);
+						}
+					}else {
+						System.out.println(EVENTIVUOTI);
+					}
+					break;
 			}
 		}while(scelta!=0);
 		
