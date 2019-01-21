@@ -98,31 +98,36 @@ public class Evento implements Serializable{
 	// Metodo che controlla se il numero di partecipanti di un evento ha raggiunto il limite e se � vero genere i messaggi
 	public ArrayList<Messaggio> controlloNPartecipanti(){
 		DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+		Date date = new Date();
+		Date ultimaIscr = (Date) categoria.getDataRitiroIscrizione().getValore().getValore();
+		
 		ArrayList<Messaggio> messaggiStato = new ArrayList<>();
+		if (!ultimaIscr.before(date)){
+			if (getPostiLiberi()==0 && stato.equalsIgnoreCase("Aperta")){
+				stato= "Chiusa";
+				for (int i=0;i< elencoIscritti.size();i++){
+					
+					Utente nomeUtente= elencoIscritti.get(i);
+					String testo= TESTOCHIUSURA[0] +categoria.getTitolo().getValore().getValore() + TESTOCHIUSURA[1] + dateFormat.format(categoria.getData().getValore().getValore())+ TESTOCHIUSURA[2] + categoria.getOra().getValore().getValore()+ TESTOCHIUSURA[3] + categoria.getLuogo().getValore().getValore() +TESTOCHIUSURA[4] + categoria.getQuotaIndividuale().getValore().getValore()+ TESTOCHIUSURA[5];                               	
+					Messaggio msg =new Messaggio(nomeUtente,testo);
+					
+					messaggiStato.add(msg);
 		
-		if (getPostiLiberi()==0 && stato.equalsIgnoreCase("Aperta")){
-			stato= "Chiusa";
-			for (int i=0;i< elencoIscritti.size();i++){
-				
-				Utente nomeUtente= elencoIscritti.get(i);
-				String testo= TESTOCHIUSURA[0] +categoria.getTitolo().getValore().getValore() + TESTOCHIUSURA[1] + dateFormat.format(categoria.getData().getValore().getValore())+ TESTOCHIUSURA[2] + categoria.getOra().getValore().getValore()+ TESTOCHIUSURA[3] + categoria.getLuogo().getValore().getValore() +TESTOCHIUSURA[4] + categoria.getQuotaIndividuale().getValore().getValore()+ TESTOCHIUSURA[5];                               	
-				Messaggio msg =new Messaggio(nomeUtente,testo);
-				
-				messaggiStato.add(msg);
-	
-			}
+				}
+			
+			}else if(stato.equalsIgnoreCase("Chiusa2")){
+				stato= "Chiusa";
+				for (int i=0;i< elencoIscritti.size();i++) {
+
+					Utente nomeUtente = elencoIscritti.get(i);
+					String testo = TESTOCHIUSURA[0] + categoria.getTitolo().getValore().getValore() + TESTOCHIUSURA[1] + dateFormat.format(categoria.getData().getValore().getValore()) + TESTOCHIUSURA[2] + categoria.getOra().getValore().getValore() + TESTOCHIUSURA[3] + categoria.getLuogo().getValore().getValore() + TESTOCHIUSURA[4] + categoria.getQuotaIndividuale().getValore().getValore() + TESTOCHIUSURA[5];
+					Messaggio msg = new Messaggio(nomeUtente, testo);
+
+					messaggiStato.add(msg);
+				}
+
+		}
 		
-		}else if(stato.equalsIgnoreCase("Chiusa2")){
-			stato= "Chiusa";
-			for (int i=0;i< elencoIscritti.size();i++) {
-
-				Utente nomeUtente = elencoIscritti.get(i);
-				String testo = TESTOCHIUSURA[0] + categoria.getTitolo().getValore().getValore() + TESTOCHIUSURA[1] + dateFormat.format(categoria.getData().getValore().getValore()) + TESTOCHIUSURA[2] + categoria.getOra().getValore().getValore() + TESTOCHIUSURA[3] + categoria.getLuogo().getValore().getValore() + TESTOCHIUSURA[4] + categoria.getQuotaIndividuale().getValore().getValore() + TESTOCHIUSURA[5];
-				Messaggio msg = new Messaggio(nomeUtente, testo);
-
-				messaggiStato.add(msg);
-			}
-
 		}
 		
 		return messaggiStato;

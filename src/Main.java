@@ -328,7 +328,7 @@ public class Main {
 					System.out.println("0) Esci");
 					for(int i=0; i<bacheca.getElencoEventi().size();i++){
 						
-						if(!bacheca.getElencoEventi().get(i).giaIscritto(elencoUtenti.get(numUtente))&& bacheca.getElencoEventi().get(i).getStato().equalsIgnoreCase("Aperta")){
+						if(!bacheca.getElencoEventi().get(i).giaIscritto(elencoUtenti.get(numUtente))&& bacheca.getElencoEventi().get(i).getStato().equalsIgnoreCase("Aperta")&& bacheca.getElencoEventi().get(i).getPostiLiberi()>0){
 							System.out.println(i+1 +")");
 							System.out.println(NOMEEVENTO + bacheca.getElencoEventi().get(i).getCategoria().getTitolo().getValore().getValore());
 							System.out.println(NOME + bacheca.getElencoEventi().get(i).getCategoria().getNome());
