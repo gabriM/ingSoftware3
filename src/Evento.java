@@ -12,6 +12,7 @@ public class Evento implements Serializable{
 	
 	final String[] TESTOCHIUSURA={"L'evento "," ha raggiunto un numero sufficiente di iscrizioni e si terra dunque in data "," alle ore "," presso ",". Si ricorda che � necessatrio versare la quota di iscrizione di "," Euro."};
 	final String[] TESTOFALLITO={"L'evento "," NON ha raggiunto un numero sufficiente di iscrizioni ed � quindi stato cancellato."};
+	final String[] TESTOANNULLATO={"L'evento ","E' stato cancellato dall'organizzatore."};
 	
 	
 	//Attributi
@@ -175,7 +176,19 @@ public class Evento implements Serializable{
 		
 		return messaggiStato;
 	}
+	public ArrayList<Messaggio> controlloEventoCancellato(){
+		ArrayList<Messaggio> messaggiStato = new ArrayList<>();
+		if(stato.equalsIgnoreCase("Annullato")){
+			for (int i=0;i< elencoIscritti.size();i++){
+				Utente nomeUtente= elencoIscritti.get(i);
+				String testo= TESTOANNULLATO[0] +categoria.getTitolo().getValore().getValore() + TESTOANNULLATO[1];
+				Messaggio msg =new Messaggio(nomeUtente,testo);
+				messaggiStato.add(msg);
+			}
 
+		}
+		return messaggiStato;
+	}
 
 
 	public boolean controlloDataEliminazione(){

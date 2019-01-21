@@ -159,14 +159,6 @@ public class Main {
 
 
 			ServizioFile.salvaSingoloOggetto(filebacheca, bacheca);
-
-			for(int i=0; i< elencoUtentiPubblicati.get(numUtente).getEventiUtente().size();i++){
-				if(!elencoUtentiPubblicati.get(numUtente).getEventiUtente().get(i).getStato().equalsIgnoreCase("Aperta")){
-					elencoUtentiPubblicati.get(numUtente).getEventiUtente().remove(i);
-				}
-			}
-
-			ServizioFile.salvaSingoloOggetto(fileutentiP, elencoUtentiPubblicati);
 			
 			switch(scelta)
 			{
@@ -275,7 +267,7 @@ public class Main {
 											// Pubblicazione evento
 											bacheca.getElencoEventi().add(eventop);
 											elencoUtenti.get(numUtente).getEventiUtente().remove(numEventoPubblicato-1);
-											elencoUtentiPubblicati.get(numUtente).getEventiUtente().add(eventop);
+											elencoUtentiPubblicati.get(numUtenteP).getEventiUtente().add(eventop);
 											ServizioFile.salvaSingoloOggetto(fileutentiP, elencoUtentiPubblicati);
 
 
@@ -458,20 +450,20 @@ public class Main {
 				break;
 
 				case 9:
-					if(elencoUtentiPubblicati.get(numUtente).getEventiUtente().size()!=0){
-						for(int i=0; i<elencoUtentiPubblicati.get(numUtente).getEventiUtente().size();i++){
+					if(elencoUtentiPubblicati.get(numUtenteP).getEventiUtente().size()!=0){
+						for(int i=0; i<elencoUtentiPubblicati.get(numUtenteP).getEventiUtente().size();i++){
 							System.out.println(i+1 +")");
-							System.out.println(NOMEEVENTO + elencoUtentiPubblicati.get(numUtente).getEventiUtente().get(i).getCategoria().getTitolo().getValore().getValore());
-							System.out.println("Data Ritiro Iscrizione: " + elencoUtentiPubblicati.get(numUtente).getEventiUtente().get(i).getCategoria().getDataRitiroIscrizione().getValore().getValore());
+							System.out.println(NOMEEVENTO + elencoUtentiPubblicati.get(numUtenteP).getEventiUtente().get(i).getCategoria().getTitolo().getValore().getValore());
+							System.out.println("Data Ritiro Iscrizione: " + elencoUtentiPubblicati.get(numUtenteP).getEventiUtente().get(i).getCategoria().getDataRitiroIscrizione().getValore().getValore());
 							}
 						int numEliminEventoPubblicato = Utility.leggiIntero(0, elencoUtentiPubblicati.size() + 1, SCELTAELIMINEVENTO);
 
 						if (numEliminEventoPubblicato != 0) {
-							elencoUtentiPubblicati.get(numUtente).getEventiUtente().get(numEliminEventoPubblicato -1).setStato("Chiusa");
-							elencoUtentiPubblicati.get(numUtente).getEventiUtente().remove(numEliminEventoPubblicato - 1);
+							elencoUtentiPubblicati.get(numUtenteP).getEventiUtente().get(numEliminEventoPubblicato -1).setStato("Annullato");
+							elencoUtentiPubblicati.get(numUtenteP).getEventiUtente().remove(numEliminEventoPubblicato - 1);
 						}
 					}else {
-						System.out.println(EVENTIVUOTI);
+						System.out.println(EVENTIPUBBLICATIVUOTI);
 					}
 					break;
 			}

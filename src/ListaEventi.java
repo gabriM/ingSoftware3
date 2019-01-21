@@ -20,8 +20,10 @@ public class ListaEventi implements Serializable {
 		for(int i=0; i<elencoEventi.size();i++){
 			ArrayList<Messaggio> messaggiStato1 = new ArrayList<>(elencoEventi.get(i).controlloNPartecipanti());
 			ArrayList<Messaggio> messaggiStato2 = new ArrayList<>(elencoEventi.get(i).controlloData());
+			ArrayList<Messaggio> messaggiStato3 = new ArrayList<>(elencoEventi.get(i).controlloEventoCancellato());
 			messaggi.addAll(messaggiStato1);
 			messaggi.addAll(messaggiStato2);
+			messaggi.addAll(messaggiStato3);
 		}
 		
 		return messaggi;
