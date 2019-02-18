@@ -8,7 +8,7 @@ import MyLib.Utility;
 
 public class Evento implements Serializable{
 	
-	
+	// provaaaaaaaaaa
 	
 	final String[] TESTOCHIUSURA={"L'evento "," ha raggiunto un numero sufficiente di iscrizioni e si terra dunque in data "," alle ore "," presso ",". Si ricorda che � necessatrio versare la quota di iscrizione di "," Euro."};
 	final String[] TESTOFALLITO={"L'evento "," NON ha raggiunto un numero sufficiente di iscrizioni ed � quindi stato cancellato."};
